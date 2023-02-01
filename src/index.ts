@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
-import { db } from './database/knex';
 import { Video } from './models/Video';
+import { VideoDatabes } from './database/VideoDatabase';
 
 const app = express();
 
@@ -16,29 +16,12 @@ app.get('/ping', (req: Request, res: Response) => {
     res.status(200).send('pong')
 });
 
-app.get('/videos', async (req: Request, res: Response) => {
-    try {
-        const videoDatas = await db('videos')
-
-        const video: Video[] = videoDatas.map((videoData) => new Video(
-            videoData.id,
-            videoData.title,
-            videoData.duration,
-            videoData.uploadDate
-        ))
-
-        res.status(200).send(video);
-    } catch (error:any) {
-        if (res.status(200)) {
-            res.status(500)
-        }
-        res.status(400).send(error.message)
-    }
-});
 
 app.get('/videos', async (req: Request, res: Response) => {
     try {
-        const videoDatas = await db('videos')
+
+        const videos = new VideoDatabes()
+        const videoDatas = await videos.getVideos()
 
         const video: Video[] = videoDatas.map((videoData) => new Video(
             videoData.id,
@@ -58,9 +41,8 @@ app.get('/videos', async (req: Request, res: Response) => {
 
 app.post('/videos', async (req: Request, res: Response) => {
     try {
-        const id = req.body.id
-        const title = req.body.title
-        const duration = req.body.duration;
+
+        const {id, title, duration} = req.body
 
         const video = new Video (
             id,
@@ -76,8 +58,9 @@ app.post('/videos', async (req: Request, res: Response) => {
             upload_data: video.getUploadDate()
         }
 
-        await db('videos').insert(newVideoDb)
-
+        const newVideo = new VideoDatabes()
+        await newVideo.insertVideos(newVideoDb)
+        
         res.status(200).send('Novo vídeo adicionado!');
     } catch (error:any) {
         if (res.status(200)) {
