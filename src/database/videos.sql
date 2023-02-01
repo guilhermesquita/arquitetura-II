@@ -9,3 +9,6 @@ CREATE TABLE videos (
 DROP TABLE videos;
 
 SELECT * FROM videos;
+
+INSERT INTO videos (id, title, duration)
+VALUES('vd#01', 'Melhores patadas pra se dar na escola - tutorial 2013', 2.5)
