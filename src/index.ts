@@ -19,4 +19,4 @@ app.get('/ping', (req: Request, res: Response) => {
 
 app.get('/videos', videosController.getVideos);
 
-app.post('/videos', videosController.getVideos);
+app.post('/videos', videosController.creatVideos);
