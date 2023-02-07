@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import cors from 'cors'
 import {  VideosController } from './controller/VideosController';
+import { VideosRouter } from './router/videosRouter';
 
 const app = express();
 const videosController = new VideosController()
@@ -16,7 +17,4 @@ app.get('/ping', (req: Request, res: Response) => {
     res.status(200).send('pong')
 });
 
-
-app.get('/videos', videosController.getVideos);
-
-app.post('/videos', videosController.creatVideos);
+app.use('/users',VideosRouter)
